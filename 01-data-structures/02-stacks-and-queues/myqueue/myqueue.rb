@@ -5,18 +5,29 @@ class MyQueue
   def initialize
     @queue = Array.new
     @head = @queue[0]
+    @count = 0
   end
 
   def enqueue(element)
-    if @head != @queue[0]
-    		@queue += @queue(element)
-    else
-    		@head
+    @queue[@count] = element
+    @tail = @queue[@count]
+    if @count == 0
+    		@head = @queue[@count]
     end
+    @count =+ 1
   end
 
   def dequeue
-    @queue.delete_if { |i| i == 0 }
+    temp = @head
+    @count -= 1
+
+    @queue[@count] = nil
+    @head = @queue[0]
+
+    if @count <= 1
+      @tail = @queue[0]
+    end
+    return temp
   end
 
   def empty?
