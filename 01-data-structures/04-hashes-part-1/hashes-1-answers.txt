@@ -1,0 +1,4 @@
+doubling the size of the array would double the
+size of the memory allocated to the array which
+may result in fragmentation and reduce
+proficiency
