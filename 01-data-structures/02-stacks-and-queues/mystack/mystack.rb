@@ -8,23 +8,24 @@ class MyStack
   end
 
   def push(item)
-    @stack.top = @stack.push(item)
+    @top = item
+    @num += 1
+    @stack[@num] = @top
   end
 
   def pop
     temp = @top
     @stack[@num] = nil
-    @stack.top = @stack.pop(item)
     @num -= 1
     @top = @stack[@num]
     return temp
   end
 
   def empty?
-    if !@queue.empty?
-      @queue.last
+    if @num < 0
+      return true
     else
-      true
+      return false
     end
   end
 end
