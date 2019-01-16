@@ -8,17 +8,17 @@ class OpenAddressing
 
   def []=(key, value)
     #set method
-
-    #temp = Hash.new(key, value)
-    #while(@items[i] != nil && @items[i].key != key)
-    #  i = (i + 1) % size
-    #  if(@items[i] = nil)
-    #    @items[i].value
-    #  else
-    #    resize
-    #  end
-    #  @items[i] = temp
-    #end
+    #COMPUTE the hash code for key, ASSIGN to index
+    i = 0
+    while((@items[i] != nil) && (@items[i] != nil))
+        i += 1
+      if(@items[i] == @items.last)
+        resize
+        #CALL INSERT(KEY, VALUE)
+        return
+      end
+    end
+    #SET array[index] to the new key and value
   end
 
   def [](key)
@@ -40,14 +40,12 @@ class OpenAddressing
   # a starting point.
   def index(key, size)
     #read hashes pt.1 for calculation, .ord or .sum for ascii
-
     key.sum % size
   end
 
   # Given an index, find the next open index in @items
   def next_open_index(slot)
-
-    i = hash(slot) % size
+    i = 0
     while(@items[i] != nil && @items[i].slot != slot)
       if @items[i] != nil
         i += 1
@@ -56,7 +54,7 @@ class OpenAddressing
       end
       i = (i + 1) % size
     end
-    i
+    return i
   end
 
   # Simple method to return the number of items in the hash
@@ -66,11 +64,11 @@ class OpenAddressing
 
   # Resize the hash
   def resize
-    #new_size = (size * 2)
-    #new_items = Array.new(new_size)
+    new_size = (size * 2)
+    new_items = Array.new(new_size)
 
-    #if @max_load_factor > 0.7
-    #  resize
-    #end
+    if @max_load_factor > 0.7
+      resize
+    end
   end
 end
