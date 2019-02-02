@@ -2,73 +2,91 @@ require_relative 'node'
 
 class OpenAddressing
   def initialize(size)
-    @items = Array.new(size)
-    @max_load_factor = 0.7
+    @size = size
+    @items = Array.new(@size)
+    @number_of_values = 0
   end
 
-  def []=(key, value)
+  def []=(key, value) #finally working
     #set method
-    #COMPUTE the hash code for key, ASSIGN to index
-    i = 0
-    while((@items[i] != nil) && (@items[i] != nil))
-        i += 1
-      if(@items[i] == @items.last)
+
+    i = index(key, @size)
+    new_item = @items[i]
+    if new_item.nil?
+      @items[i] = Node.new(key, value)
+    elsif new_item.key != key
+      while @items[index(key, @size)].key != nil && @items[index(key, @size)].key != key
         resize
-        #CALL INSERT(KEY, VALUE)
-        return
+        new_index = index(key, @size)
+        break if @items[new_index] == nil
       end
-    end
-    #SET array[index] to the new key and value
-  end
-
-  def [](key)
-    #retrieve / get
-
-    key = @items[i]
-    while(@items[i] != nil)
-      if(@items[i].key = key)
-        @items[i].value
+      self[key] = value
+    elsif new_item.key == key && new_item.value != value
+      if next_open_index(i) == -1
+        resize
+        new_index = index(key, @size)
+        @items[new_index].value = value
       else
-        nil
+        new_index = next_open_index(index(key, @size))
+        @items[new_index] = value
       end
     end
-    i = (i + 1) % size
   end
+
+  def [](key) #works
+    #retrieve / get
+    i = index(key, @size)
+    item = @items[i]
+    if item.key != key
+      @items.each do |i|
+        item.next
+      end
+    else
+      item.value
+    end
+  end
+
 
   # Returns a unique, deterministically reproducible index into an array
   # We are hashing based on strings, let's use the ascii value of each string as
   # a starting point.
-  def index(key, size)
+  def index(key, size) #working correctly
     #read hashes pt.1 for calculation, .ord or .sum for ascii
     key.sum % size
   end
 
   # Given an index, find the next open index in @items
-  def next_open_index(slot)
-    i = 0
-    while(@items[i] != nil && @items[i].slot != slot)
-      if @items[i] != nil
-        i += 1
+  def next_open_index(index) #working correctly
+    i = index
+    while index <= (@size - 1)
+      if @items[index] == nil
+        return index
+      elsif @items[index] != nil && index == (i - 1)
+        return -1
+      elsif @items[index] != nil && @items[index] == (@size - 1)
+        index = 0
       else
-        slot = @items[i]
+        index = (index + 1)
       end
-      i = (i + 1) % size
     end
-    return i
+    -1
   end
 
+
   # Simple method to return the number of items in the hash
-  def size
-    @items.length
+  def size #working correctly
+    @size
   end
 
   # Resize the hash
-  def resize
-    new_size = (size * 2)
-    new_items = Array.new(new_size)
-
-    if @max_load_factor > 0.7
-      resize
+  def resize #working properly
+    @size = @size * 2
+    new_hash = Array.new(@size)
+    @items.each do |item|
+      if item != nil
+      new_hash[index(item.key, @size)] = item
+      end
     end
+    @items = new_hash
   end
 end
